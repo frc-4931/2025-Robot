@@ -22,5 +22,11 @@ public final class Constants {
         public static final double TURN_CONSTANT = 6;
 
     }
+
+    public static final class RampCostants{
+        public static final int CoralDropMotorID = 9;
+        public static final double CoralDropSpeed = 0.1;
+
+    }
     
 }
