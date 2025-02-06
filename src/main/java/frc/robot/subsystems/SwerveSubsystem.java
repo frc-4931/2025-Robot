@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.ctre.phoenix.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -44,9 +45,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-// import org.json.simple.parser.ParseException;
+import org.json.simple.parser.ParseException;
 // import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -58,11 +61,15 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
+import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLogOutput;
+
 public class SwerveSubsystem extends SubsystemBase{
 
     private final SwerveDrive swerveDrive;
 
     private Field2d field = new Field2d();
+
 
     public SwerveSubsystem(File directory){
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -129,17 +136,62 @@ public class SwerveSubsystem extends SubsystemBase{
     SmartDashboard.putData("Field", field);
   }
 
-          
+  public Command driveToPose(Pose2d pose){
+        PathConstraints constraints = new PathConstraints(swerveDrive.getMaximumChassisVelocity(), 4, swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
-    public Command getAutonomousCommand(String pathName)
+        return AutoBuilder.pathfindToPose(pose, constraints, 0);
+  }
+
+  private Command driveWithSetpointGenerator(Supplier<ChassisSpeeds> robotRelativeChassisSpeed)
+  throws IOException, ParseException
   {
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return new PathPlannerAuto(pathName);
+    SwerveSetpointGenerator setpointGenerator = new SwerveSetpointGenerator(RobotConfig.fromGUISettings(),
+                                                                            swerveDrive.getMaximumChassisAngularVelocity());
+    AtomicReference<SwerveSetpoint> prevSetpoint
+        = new AtomicReference<>(new SwerveSetpoint(swerveDrive.getRobotVelocity(),
+                                                   swerveDrive.getStates(),
+                                                   DriveFeedforwards.zeros(swerveDrive.getModules().length)));
+    AtomicReference<Double> previousTime = new AtomicReference<>();
+
+    return startRun(() -> previousTime.set(Timer.getFPGATimestamp()),
+                    () -> {
+                      double newTime = Timer.getFPGATimestamp();
+                      SwerveSetpoint newSetpoint = setpointGenerator.generateSetpoint(prevSetpoint.get(),
+                                                                                      robotRelativeChassisSpeed.get(),
+                                                                                      newTime - previousTime.get());
+                      swerveDrive.drive(newSetpoint.robotRelativeSpeeds(),
+                                        newSetpoint.moduleStates(),
+                                        newSetpoint.feedforwards().linearForces());
+                      prevSetpoint.set(newSetpoint);
+                      previousTime.set(newTime);
+
+                    });
+  }
+
+  public Command driveWithSetpointGeneratorFieldRelative(Supplier<ChassisSpeeds> fieldRelativeSpeeds)
+  {
+    try
+    {
+      return driveWithSetpointGenerator(() -> {
+        return ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds.get(), getHeading());
+
+      });
+    } catch (Exception e)
+    {
+      DriverStation.reportError(e.toString(), true);
+    }
+    return Commands.none();
+
   }
 
 
     @Override
     public void periodic(){
+    }
+
+    @AutoLog
+    public class MyInputs {
+        public Pose2d mypose = swerveDrive.getPose();
     }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier anglularRotationX){
@@ -190,7 +242,9 @@ public class SwerveSubsystem extends SubsystemBase{
         swerveDrive.resetOdometry(initialHolonomicPose);
     }
 
+    @AutoLogOutput(key = "Robot Pose")
     public Pose2d getPose(){
+
         return swerveDrive.getPose();
     }
 
@@ -205,6 +259,7 @@ public class SwerveSubsystem extends SubsystemBase{
     public void zeroGyro(){
         swerveDrive.zeroGyro();
     }
+
 
     // private boolean isRedAlliance(){
     //     return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
