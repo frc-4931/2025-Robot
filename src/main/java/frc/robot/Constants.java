@@ -11,6 +11,7 @@ public final class Constants {
     public static final double LOOP_TIME = 0.13;
     public static final double speedMultiplier = 1;
     public static final double MAX_SPEED = Units.feetToMeters(14.5) * speedMultiplier;
+    public static final double maxAcceleration = 4;
 
     public static final class DrivebaseConstants{
         public static final double WHEEL_LOCK_TIME = 10;

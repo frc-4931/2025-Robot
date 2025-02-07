@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindThenFollowPath;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,8 +26,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.AutoCommands;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -35,14 +38,18 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private final AutoCommands autoCommands = new AutoCommands();
 
-  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(), () -> driverXbox.getLeftY() * -1, () -> driverXbox.getLeftX() * -1).withControllerRotationAxis(driverXbox::getRightX).deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8).allianceRelativeControl(true);
+  
+
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(), () -> driverXbox.getLeftY() * -1, () -> driverXbox.getLeftX() * -1).withControllerRotationAxis(driverXbox::getRightX).deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8).allianceRelativeControl(false);
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX, driverXbox::getRightY).headingWhile(true);
   SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true).allianceRelativeControl(false);
 
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
+    NamedCommands.registerCommand("Drive", autoCommands.driveToPose(new Pose2d(2, 3, new Rotation2d(0))));
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -57,8 +64,15 @@ public class RobotContainer {
 
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.y().whileTrue(drivebase.driveToPose(new Pose2d(10, 5, Rotation2d.fromDegrees(180))));
+      //driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.b().whileTrue(autoCommands.ScoreCoral('I'));
+      driverXbox.a().whileTrue(autoCommands.ScoreCoral('K'));
+      driverXbox.y().whileTrue(autoCommands.ScoreCoral('E'));
+      driverXbox.x().whileTrue(autoCommands.ScoreCoral('B'));
+
+      driverXbox.leftBumper().whileTrue(autoCommands.LFeeder());
+      driverXbox.rightBumper().whileTrue(autoCommands.RFeeder());
+      
   }
 
   public Command getAutonomousCommand() {

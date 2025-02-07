@@ -78,8 +78,8 @@ public class SwerveSubsystem extends SubsystemBase{
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-        swerveDrive.setHeadingCorrection(false);
-        swerveDrive.setCosineCompensator(false);
+        swerveDrive.setHeadingCorrection(true);
+        swerveDrive.setCosineCompensator(true);
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
 
@@ -136,10 +136,18 @@ public class SwerveSubsystem extends SubsystemBase{
     SmartDashboard.putData("Field", field);
   }
 
-  public Command driveToPose(Pose2d pose){
-        PathConstraints constraints = new PathConstraints(swerveDrive.getMaximumChassisVelocity(), 4, swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+//   public Command driveToPose(Pose2d pose){
+//         PathConstraints constraints = new PathConstraints(swerveDrive.getMaximumChassisVelocity(), 4, swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
-        return AutoBuilder.pathfindToPose(pose, constraints, 0);
+//         return AutoBuilder.pathfindToPose(pose, constraints, 0);
+//   }
+
+  public double getMaxChassisVelocity(){
+    return swerveDrive.getMaximumChassisVelocity();
+  }
+
+  public double getMaxAngularChassisVelocity(){
+    return swerveDrive.getMaximumChassisAngularVelocity();
   }
 
   private Command driveWithSetpointGenerator(Supplier<ChassisSpeeds> robotRelativeChassisSpeed)
@@ -261,19 +269,22 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
 
-    // private boolean isRedAlliance(){
-    //     return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
-    // }
+    private boolean isRedAlliance()
+  {
+    var alliance = DriverStation.getAlliance();
+    return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+  }
 
-    // public void zeroGyroWithAlliance()
-    // {
-    //     if (isRedAlliance()){
-    //         zeroGyro();
-    //         resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
-    //     } else {
-    //         zeroGyro();
-    //     }
-    // }
+    public void zeroGyroWithAlliance()
+    {
+        if (isRedAlliance()){
+            zeroGyro();
+            resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+        } else {
+            zeroGyro();
+        }
+    }
+    
     public void setMotorBrake(boolean brake){
         swerveDrive.setMotorIdleMode(brake);
     }

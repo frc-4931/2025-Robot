@@ -37,6 +37,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
 
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
