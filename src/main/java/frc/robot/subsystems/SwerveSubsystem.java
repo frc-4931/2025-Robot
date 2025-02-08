@@ -2,17 +2,17 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meter;
 
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.commands.PathPlannerAuto;
-// import com.pathplanner.lib.commands.PathfindingCommand;
-// import com.pathplanner.lib.config.PIDConstants;
-// import com.pathplanner.lib.config.RobotConfig;
-// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-// import com.pathplanner.lib.path.PathConstraints;
-// import com.pathplanner.lib.path.PathPlannerPath;
-// import com.pathplanner.lib.util.DriveFeedforwards;
-// import com.pathplanner.lib.util.swerve.SwerveSetpoint;
-// import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -69,13 +69,58 @@ public class SwerveSubsystem extends SubsystemBase{
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
 
-        // setupPathPlanner();
+        setupPathPlanner();
 
     }
 
     public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg){
         swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED, new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
     }
+
+    public void setupPathPlanner(){
+        try{
+            RobotConfig config = RobotConfig.fromGUISettings();
+
+            final boolean enableFeedForward = true;
+
+            AutoBuilder.configure(
+                this::getPose, 
+                this::resetOdometry, 
+                this::getRobotVelocity, 
+                (speedsRobotRelative, moduleFeedForwards) -> {
+                    if(enableFeedForward){
+                        swerveDrive.drive(
+                            speedsRobotRelative,
+                            swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                            moduleFeedForwards.linearForces()
+                        );
+                    } else{
+                        swerveDrive.setChassisSpeeds(speedsRobotRelative);
+                    }
+                }, 
+                //this::driveRobotRelative,
+                new PPHolonomicDriveController(
+                    new PIDConstants(5.0, 0, 0),
+                    new PIDConstants(5.0, 0, 0)),
+                config,
+                () -> {
+                        var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+        },
+        this
+      );
+    }catch(Exception e){
+      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+    }
+    }
+
+    // Set up custom logging to add the current path to a field 2d widget
+    // PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+
+    // SmartDashboard.putData("Field", field);
 
     // public void setupPathPlanner(){
     // // Load the RobotConfig from the GUI settings. You should probably
