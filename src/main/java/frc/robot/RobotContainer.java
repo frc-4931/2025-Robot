@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoCommands;
 import frc.robot.subsystems.CoralDrop;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
@@ -32,6 +33,7 @@ public class RobotContainer {
   final CommandXboxController driverXbox = new CommandXboxController(0);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final CoralDrop coralDrop = new CoralDrop();
+  private final AutoCommands autoCommands = new AutoCommands();
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(), () -> driverXbox.getLeftY() * -1, () -> driverXbox.getLeftX() * -1).withControllerRotationAxis(driverXbox::getRightX).deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8).allianceRelativeControl(true);
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX, driverXbox::getRightY).headingWhile(true);
@@ -87,6 +89,7 @@ public class RobotContainer {
     {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.b().onTrue(coralDrop.toggleRun());
+      driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
       //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       // driverXbox.b().whileTrue(
       //     drivebase.driveToPose(
@@ -96,6 +99,9 @@ public class RobotContainer {
       driverXbox.back().whileTrue(Commands.none());
       //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.rightBumper().onTrue(Commands.none());
+
+      
+      driverXbox.leftBumper().whileTrue(autoCommands.AimAtFeeder());
     }
   }
 

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.events.PointTowardsZoneTrigger;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -103,5 +104,9 @@ public class AutoCommands {
     return PoseToPath("Right");
   }
 
+  public Command AimAtFeeder(){
+    Command pathfindingCommand = AutoBuilder.pathfindToPose(new Pose2d(2, 2, Rotation2d.fromDegrees(0)), Pathconstraint);
+    return pathfindingCommand;
+}
     
 }
