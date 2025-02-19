@@ -65,6 +65,7 @@ public class CoralDrop extends SubsystemBase{
     public void setSpeed(){
         if(isRunning) {
        closedLoopController.setReference(-10, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
+       
         }
         else{
             closedLoopController.setReference(0, ControlType.kVoltage, ClosedLoopSlot.kSlot1);

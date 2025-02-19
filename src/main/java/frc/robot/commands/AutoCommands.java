@@ -60,7 +60,8 @@ public class AutoCommands {
   }
 
   public Command PathFindToPose(Pose2d targetPose){
-    return null;
+    Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, Pathconstraint);
+    return pathfindingCommand;
 
   }
 
@@ -90,6 +91,8 @@ public class AutoCommands {
         return PoseToPath("K");
       case 'L':
         return PoseToPath("L");
+      case 'T':
+        return PoseToPath("Test");
       default:
         return Commands.print("You should capitalize");
     }

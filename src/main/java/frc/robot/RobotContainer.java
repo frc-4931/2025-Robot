@@ -101,7 +101,7 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
 
       
-      driverXbox.leftBumper().whileTrue(autoCommands.AimAtFeeder());
+      driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
     }
   }
 
