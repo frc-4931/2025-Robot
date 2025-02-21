@@ -18,61 +18,61 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralDrop extends SubsystemBase{
-    private SparkMax coralMotor;
-    private SparkMaxConfig motorConfig;
-    private SparkClosedLoopController closedLoopController;
-    private RelativeEncoder encoder;
-    private boolean isRunning;
+    // private SparkMax coralMotor;
+    // private SparkMaxConfig motorConfig;
+    // private SparkClosedLoopController closedLoopController;
+    // private RelativeEncoder encoder;
+    // private boolean isRunning;
 
-    public CoralDrop(){
-        coralMotor = new SparkMax(9, MotorType.kBrushless);
-        closedLoopController = coralMotor.getClosedLoopController();
-        encoder = coralMotor.getEncoder();
+    // public CoralDrop(){
+    //     coralMotor = new SparkMax(9, MotorType.kBrushless);
+    //     closedLoopController = coralMotor.getClosedLoopController();
+    //     encoder = coralMotor.getEncoder();
 
-        motorConfig = new SparkMaxConfig();
+    //     motorConfig = new SparkMaxConfig();
 
-        motorConfig.encoder.positionConversionFactor(1).velocityConversionFactor(1);
+    //     motorConfig.encoder.positionConversionFactor(1).velocityConversionFactor(1);
 
-        motorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .p(.1)
-        .i(0)
-        .d(0)
-        .outputRange(-1, 1)
-        .p(.00001, ClosedLoopSlot.kSlot1)
-        .i(0, ClosedLoopSlot.kSlot1)
-        .d(0, ClosedLoopSlot.kSlot1)
-        .velocityFF(1/ 5767, ClosedLoopSlot.kSlot1)
-        .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
+    //     motorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    //     .p(.1)
+    //     .i(0)
+    //     .d(0)
+    //     .outputRange(-1, 1)
+    //     .p(.00001, ClosedLoopSlot.kSlot1)
+    //     .i(0, ClosedLoopSlot.kSlot1)
+    //     .d(0, ClosedLoopSlot.kSlot1)
+    //     .velocityFF(1/ 5767, ClosedLoopSlot.kSlot1)
+    //     .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
 
-        coralMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    //     coralMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        SmartDashboard.setDefaultNumber("Target Position", 0);
-        SmartDashboard.setDefaultNumber("Target Velocity", 0);
-        SmartDashboard.setDefaultBoolean("Control Mode", false);
-        SmartDashboard.setDefaultBoolean("Reset Encoder", false);
+    //     SmartDashboard.setDefaultNumber("Target Position", 0);
+    //     SmartDashboard.setDefaultNumber("Target Velocity", 0);
+    //     SmartDashboard.setDefaultBoolean("Control Mode", false);
+    //     SmartDashboard.setDefaultBoolean("Reset Encoder", false);
 
-        isRunning = false;
-    }
+    //     isRunning = false;
+    // }
 
-    public Command toggleRun(){
-        return this.runOnce(() -> {
-            isRunning = !isRunning;
-            setSpeed();;
-        });
-        //(() -> {isRunning = !(isRunning); setSpeed();});
-    }
+    // public Command toggleRun(){
+    //     return this.runOnce(() -> {
+    //         isRunning = !isRunning;
+    //         setSpeed();;
+    //     });
+    //     //(() -> {isRunning = !(isRunning); setSpeed();});
+    // }
 
-    public void setSpeed(){
-        if(isRunning) {
-       closedLoopController.setReference(-10, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
+    // public void setSpeed(){
+    //     if(isRunning) {
+    //    closedLoopController.setReference(-10, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
        
-        }
-        else{
-            closedLoopController.setReference(0, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
-        }
-    }
+    //     }
+    //     else{
+    //         closedLoopController.setReference(0, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
+    //     }
+    // }
 
-    public void stop(){
-        closedLoopController.setReference(0, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
-    }
+    // public void stop(){
+    //     closedLoopController.setReference(0, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
+    // }
 }

@@ -88,7 +88,7 @@ public class RobotContainer {
     } else
     {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.b().onTrue(coralDrop.toggleRun());
+      //driverXbox.b().onTrue(coralDrop.toggleRun());
       driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
       //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       // driverXbox.b().whileTrue(
@@ -98,7 +98,7 @@ public class RobotContainer {
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().onTrue(Commands.none());
+      driverXbox.rightBumper().onTrue(autoCommands.PathFindToPose(new Pose2d(2, 2, Rotation2d.fromDegrees(0))));
 
       
       driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
