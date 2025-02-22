@@ -36,6 +36,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+
 //import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -191,6 +193,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
+        updatePose();
+        SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
     }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier anglularRotationX){
@@ -239,6 +243,12 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public Pose2d getPose(){
         return swerveDrive.getPose();
+    }
+
+    public void updatePose(){
+        double[] pose = LimelightHelpers.getBotPose("");
+        Pose2d robotPose = new Pose2d(pose[0], pose[1], Rotation2d.fromDegrees(pose[7]));
+        swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(robotPose, Timer.getFPGATimestamp());
     }
 
     public void setChassisSpeeds(ChassisSpeeds chassisSpeeds){
