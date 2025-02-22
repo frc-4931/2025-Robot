@@ -67,8 +67,8 @@ public class SwerveSubsystem extends SubsystemBase{
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-        swerveDrive.setHeadingCorrection(false);
-        swerveDrive.setCosineCompensator(false);
+        swerveDrive.setHeadingCorrection(true);
+        swerveDrive.setCosineCompensator(true);
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
 
@@ -103,7 +103,7 @@ public class SwerveSubsystem extends SubsystemBase{
                 }, 
                 //this::driveRobotRelative,
                 new PPHolonomicDriveController(
-                    new PIDConstants(4.5, 0, 0),
+                    new PIDConstants(1.5, 0, 0),
                     new PIDConstants(0, 0, 0)),
                 config,
                 () -> {

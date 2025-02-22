@@ -98,7 +98,7 @@ public class RobotContainer {
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().onTrue(autoCommands.PathFindToPose(new Pose2d(2, 2, Rotation2d.fromDegrees(0))));
+      driverXbox.rightBumper().whileTrue(autoCommands.PoseToPath("Test"));
 
       
       driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));

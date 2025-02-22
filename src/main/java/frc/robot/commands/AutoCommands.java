@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoCommands {
     //private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-    PathConstraints Pathconstraint = new PathConstraints(Constants.MAX_SPEED, 4, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    PathConstraints Pathconstraint = new PathConstraints(Constants.MAX_SPEED, 1, Units.degreesToRadians(360), Units.degreesToRadians(540));
 
     
 
