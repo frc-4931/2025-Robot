@@ -25,39 +25,39 @@ public class Climber extends SubsystemBase{
     private boolean isRunning;
 
     public Climber(boolean Climb){
-        if (Climb = true) {
-        climbMotor = new SparkMax(10, MotorType.kBrushless);
-        closedLoopController = climbMotor.getClosedLoopController();
-        encoder = climbMotor.getEncoder();
+    //     if (Climb == true) {
+    //     climbMotor = new SparkMax(10, MotorType.kBrushless);
+    //     closedLoopController = climbMotor.getClosedLoopController();
+    //     encoder = climbMotor.getEncoder();
 
-        motorConfig = new SparkMaxConfig();
+    //     motorConfig = new SparkMaxConfig();
 
-        motorConfig.encoder.positionConversionFactor(1).velocityConversionFactor(1);
+    //     motorConfig.encoder.positionConversionFactor(1).velocityConversionFactor(1);
 
-        motorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .p(.1)
-        .i(0)
-        .d(0)
-        .outputRange(-1, 1)
-        .p(.00001, ClosedLoopSlot.kSlot1)
-        .i(0, ClosedLoopSlot.kSlot1)
-        .d(0, ClosedLoopSlot.kSlot1)
-        .velocityFF(1/ 5767, ClosedLoopSlot.kSlot1)
-        .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
+    //     motorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    //     .p(.1)
+    //     .i(0)
+    //     .d(0)
+    //     .outputRange(-1, 1)
+    //     .p(.00001, ClosedLoopSlot.kSlot1)
+    //     .i(0, ClosedLoopSlot.kSlot1)
+    //     .d(0, ClosedLoopSlot.kSlot1)
+    //     .velocityFF(1/ 5767, ClosedLoopSlot.kSlot1)
+    //     .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
 
-        climbMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    //     climbMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        SmartDashboard.setDefaultNumber("Target Position", 0);
-        SmartDashboard.setDefaultNumber("Target Velocity", 0);
-        SmartDashboard.setDefaultBoolean("Control Mode", false);
-        SmartDashboard.setDefaultBoolean("Reset Encoder", false);
+    //     SmartDashboard.setDefaultNumber("Target Position", 0);
+    //     SmartDashboard.setDefaultNumber("Target Velocity", 0);
+    //     SmartDashboard.setDefaultBoolean("Control Mode", false);
+    //     SmartDashboard.setDefaultBoolean("Reset Encoder", false);
 
-        isRunning = false;
-        }
+    //     isRunning = false;
+    //     }
             
-    else {
+    // else {
             
-        }
+    //     }
     }
 
     public Command toggleRun(){

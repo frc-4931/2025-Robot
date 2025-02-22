@@ -36,31 +36,37 @@ public class AlgaeArm extends SubsystemBase{
     private boolean isRunning;
 
     public AlgaeArm(boolean Phase2){
-        if (Phase2 = true) {
-            wheelMotor = new SparkMax(11, MotorType.kBrushless);
-            moveMotor = new SparkMax(12, MotorType.kBrushless);
+    //     if (Phase2 == true) {
+    //         wheelMotor = new SparkMax(11, MotorType.kBrushless);
+    //         moveMotor = new SparkMax(12, MotorType.kBrushless);
 
-            SparkMaxConfig wheelMotorConfig = new SparkMaxConfig();
-            SparkMaxConfig moveMotorConfig = new SparkMaxConfig();
+    //         SparkMaxConfig wheelMotorConfig = new SparkMaxConfig();
+    //         SparkMaxConfig moveMotorConfig = new SparkMaxConfig();
 
-            wheelMotorConfig
-                .smartCurrentLimit(50)
-                .idleMode(IdleMode.kBrake)
-                .inverted(true);
+    //         wheelMotorConfig
+    //             .smartCurrentLimit(50)
+    //             .idleMode(IdleMode.kBrake)
+    //             .inverted(true);
             
-            moveMotorConfig
-            .smartCurrentLimit(50)
-            .idleMode(IdleMode.kBrake)
-            .inverted(true);
+    //         moveMotorConfig
+    //         .smartCurrentLimit(50)
+    //         .idleMode(IdleMode.kBrake)
+    //         .inverted(true);
 
-            wheelMotor.configure(wheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-            moveMotor.configure(moveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    //         wheelMotor.configure(wheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    //         moveMotor.configure(moveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
-        }
+    //     }
             
-    else {
+    // else {
             
-        }
+    //     }
+    }
+
+    public Command turnOn(){
+       return this.runOnce(() -> {
+
+        wheelMotor.set(10);});
     }
 
     public Command toggleRun(){

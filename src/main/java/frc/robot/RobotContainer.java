@@ -11,11 +11,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
@@ -33,6 +35,8 @@ import swervelib.SwerveInputStream;
 
 public class RobotContainer {
   final CommandXboxController driverXbox = new CommandXboxController(0);
+  final CommandJoystick buttonBox1 = new CommandJoystick(1);
+  final CommandJoystick buttonBox2 = new CommandJoystick(2);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final CoralDrop coralDrop = new CoralDrop(false);
   private final AlgaeArm algaeArm = new AlgaeArm(false);
@@ -107,6 +111,10 @@ public class RobotContainer {
       
       driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
       //driverXbox.y().onTrue(drivebase.updatePose());
+      buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
+      buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
+      buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
+      buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
     }
   }
 
