@@ -89,6 +89,8 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    NamedCommands.registerCommand("CoralDrop", new CoralOutCommand(roller));
   }
 
   private void configureBindings() {

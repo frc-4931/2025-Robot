@@ -20,7 +20,7 @@ public class AlgaeArm extends SubsystemBase {
     public AlgaeArm () {
 
     // Set up the arm motor as a brushed motor
-    armMotor = new SparkMax(ArmConstants.ARM_MOTOR_ID, MotorType.kBrushed);
+    armMotor = new SparkMax(ArmConstants.ARM_MOTOR_ID, MotorType.kBrushless);
 
     // Set can timeout. Because this project only sets parameters once on
     // construction, the timeout can be long without blocking robot operation. Code

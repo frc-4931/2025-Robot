@@ -19,7 +19,7 @@ public class Roller extends SubsystemBase {
     public Roller () {
 
     // Set up the roller motor as a brushed motor
-    rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushed);
+    rollerMotor = new SparkMax(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
 
     // Set can timeout. Because this project only sets parameters once on
     // construction, the timeout can be long without blocking robot operation. Code
