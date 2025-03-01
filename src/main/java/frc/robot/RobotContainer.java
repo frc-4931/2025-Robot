@@ -22,10 +22,19 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlgieInCommand;
+import frc.robot.commands.AlgieOutCommand;
+import frc.robot.commands.ArmDownCommand;
+import frc.robot.commands.ArmUpCommand;
 import frc.robot.commands.AutoCommands;
+import frc.robot.commands.ClimberDownCommand;
+import frc.robot.commands.ClimberUpCommand;
+import frc.robot.commands.CoralOutCommand;
+import frc.robot.commands.CoralStackCommand;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralDrop;
+import frc.robot.subsystems.Roller;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 
@@ -33,14 +42,38 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import swervelib.SwerveInputStream;
 
+//import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OperatorConstants;
+// import frc.robot.autos.DriveForwardAuto;
+// import frc.robot.autos.SimpleCoralAuto;
+import frc.robot.commands.AlgieInCommand;
+import frc.robot.commands.AlgieOutCommand;
+import frc.robot.commands.ArmDownCommand;
+import frc.robot.commands.ArmUpCommand;
+import frc.robot.commands.ClimberDownCommand;
+import frc.robot.commands.ClimberUpCommand;
+import frc.robot.commands.CoralOutCommand;
+import frc.robot.commands.CoralStackCommand;
+// import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.AlgaeArm;
+import frc.robot.subsystems.Climber;
+// import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Roller;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 public class RobotContainer {
   final CommandXboxController driverXbox = new CommandXboxController(0);
   final CommandJoystick buttonBox1 = new CommandJoystick(1);
   final CommandJoystick buttonBox2 = new CommandJoystick(2);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  private final CoralDrop coralDrop = new CoralDrop(false);
-  private final AlgaeArm algaeArm = new AlgaeArm(false);
-  private final Climber climber = new Climber(false);
+  //private final CoralDrop coralDrop = new CoralDrop();
+  private final AlgaeArm algaeArm = new AlgaeArm();
+  private final Climber climber = new Climber();
+  private final Roller roller = new Roller();
   private final AutoCommands autoCommands = new AutoCommands();
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(), () -> driverXbox.getLeftY() * -1, () -> driverXbox.getLeftX() * -1).withControllerRotationAxis(driverXbox::getRightX).deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8).allianceRelativeControl(true);
@@ -97,7 +130,7 @@ public class RobotContainer {
     {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       //driverXbox.b().onTrue(coralDrop.toggleRun());
-      driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
+      //driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
       //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       // driverXbox.b().whileTrue(
       //     drivebase.driveToPose(
@@ -106,15 +139,44 @@ public class RobotContainer {
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().whileTrue(autoCommands.PoseToPath("Test"));
+      //driverXbox.rightBumper().whileTrue(autoCommands.PoseToPath("Test"));
 
       
-      driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
+      //driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
       //driverXbox.y().onTrue(drivebase.updatePose());
       buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
       buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
       buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
       buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
+
+      
+    //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
+    driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
+    
+    // Here we use a trigger as a button when it is pushed past a certain threshold
+    driverXbox.rightTrigger(.2).whileTrue(new AlgieOutCommand(roller));
+
+    /**
+     * The arm will be passively held up or down after this is used,
+     * make sure not to run the arm too long or it may get upset!
+     */
+    driverXbox.leftBumper().whileTrue(new ArmUpCommand(algaeArm));
+    driverXbox.leftTrigger(.2).whileTrue(new ArmDownCommand(algaeArm));
+
+    /**
+     * Used to score coral, the stack command is for when there is already coral
+     * in L1 where you are trying to score. The numbers may need to be tuned, 
+     * make sure the rollers do not wear on the plastic basket.
+     */
+    driverXbox.x().whileTrue(new CoralOutCommand(roller));
+    driverXbox.y().whileTrue(new CoralStackCommand(roller));
+
+    /**
+     * POV is a direction on the D-Pad or directional arrow pad of the controller,
+     * the direction of this will be different depending on how your winch is wound
+     */
+    driverXbox.pov(0).whileTrue(new ClimberUpCommand(climber));
+    driverXbox.pov(180).whileTrue(new ClimberDownCommand(climber));
     }
   }
 

@@ -24,7 +24,7 @@ public class CoralDrop extends SubsystemBase{
     private RelativeEncoder encoder;
     private boolean isRunning;
 
-    public CoralDrop(boolean Phase1){
+    public CoralDrop(){
     //     if (Phase1 = true) {
     //     coralMotor = new SparkMax(9, MotorType.kBrushless);
     //     closedLoopController = coralMotor.getClosedLoopController();

@@ -1,93 +1,53 @@
 package frc.robot.subsystems;
 
-import java.io.ObjectInputFilter.Config;
-
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+public class AlgaeArm extends SubsystemBase {
 
-public class AlgaeArm extends SubsystemBase{
-    private SparkMax wheelMotor;
-    private SparkMax moveMotor;
-    private SparkMaxConfig motorConfig;
-    private SparkClosedLoopController closedLoopController;
-    private RelativeEncoder encoder;
-    private boolean isRunning;
+    private final SparkMax armMotor;
+    
+    /**
+     * This subsytem that controls the arm.
+     */
+    public AlgaeArm () {
 
-    public AlgaeArm(boolean Phase2){
-    //     if (Phase2 == true) {
-    //         wheelMotor = new SparkMax(11, MotorType.kBrushless);
-    //         moveMotor = new SparkMax(12, MotorType.kBrushless);
+    // Set up the arm motor as a brushed motor
+    armMotor = new SparkMax(ArmConstants.ARM_MOTOR_ID, MotorType.kBrushed);
 
-    //         SparkMaxConfig wheelMotorConfig = new SparkMaxConfig();
-    //         SparkMaxConfig moveMotorConfig = new SparkMaxConfig();
+    // Set can timeout. Because this project only sets parameters once on
+    // construction, the timeout can be long without blocking robot operation. Code
+    // which sets or gets parameters during operation may need a shorter timeout.
+    armMotor.setCANTimeout(250);
 
-    //         wheelMotorConfig
-    //             .smartCurrentLimit(50)
-    //             .idleMode(IdleMode.kBrake)
-    //             .inverted(true);
-            
-    //         moveMotorConfig
-    //         .smartCurrentLimit(50)
-    //         .idleMode(IdleMode.kBrake)
-    //         .inverted(true);
-
-    //         wheelMotor.configure(wheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    //         moveMotor.configure(moveMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-    //     }
-            
-    // else {
-            
-    //     }
+    // Create and apply configuration for arm motor. Voltage compensation helps
+    // the arm behave the same as the battery
+    // voltage dips. The current limit helps prevent breaker trips or burning out
+    // the motor in the event the arm stalls.
+    SparkMaxConfig armConfig = new SparkMaxConfig();
+    armConfig.voltageCompensation(10);
+    armConfig.smartCurrentLimit(ArmConstants.ARM_MOTOR_CURRENT_LIMIT);
+    armConfig.idleMode(IdleMode.kBrake);
+    armMotor.configure(armConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public Command turnOn(){
-       return this.runOnce(() -> {
-
-        wheelMotor.set(10);});
+    @Override
+    public void periodic() {
     }
-
-    public Command toggleRun(){
-        return this.runOnce(() -> {
-            isRunning = !isRunning;
-            setSpeed();;
-        });
-        //(() -> {isRunning = !(isRunning); setSpeed();});
-    }
-
-    public void setSpeed(){
-        if(isRunning) {
-       closedLoopController.setReference(-10, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
-       
-        }
-        else{
-            closedLoopController.setReference(0, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
-        }
-    }
-
-    public void stop(){
-        closedLoopController.setReference(0, ControlType.kVoltage, ClosedLoopSlot.kSlot1);
+    /** 
+     * This is a method that makes the arm move at your desired speed
+     *  Positive values make it spin forward and negative values spin it in reverse
+     * 
+     * @param speed motor speed from -1.0 to 1, with 0 stopping it
+     */
+    public void runArm(double speed){
+        armMotor.set(speed);
     }
 }
