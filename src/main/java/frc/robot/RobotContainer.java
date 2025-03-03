@@ -25,6 +25,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlgieInCommand;
 import frc.robot.commands.AlgieOutCommand;
 import frc.robot.commands.ArmDownCommand;
+import frc.robot.commands.ArmStop;
 import frc.robot.commands.ArmUpCommand;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.ClimberDownCommand;
@@ -153,7 +154,7 @@ public class RobotContainer {
 
       
     //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
-    driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
+    //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
     
     // Here we use a trigger as a button when it is pushed past a certain threshold
     driverXbox.rightTrigger(.2).whileTrue(new AlgieOutCommand(roller));
@@ -162,8 +163,9 @@ public class RobotContainer {
      * The arm will be passively held up or down after this is used,
      * make sure not to run the arm too long or it may get upset!
      */
-    driverXbox.leftBumper().whileTrue(new ArmUpCommand(algaeArm));
-    driverXbox.leftTrigger(.2).whileTrue(new ArmDownCommand(algaeArm));
+    driverXbox.pov(90).whileTrue(new ArmUpCommand(algaeArm));
+    driverXbox.pov(270).whileTrue(new ArmDownCommand(algaeArm));
+    driverXbox.b().onTrue(new ArmStop(algaeArm));
 
     /**
      * Used to score coral, the stack command is for when there is already coral

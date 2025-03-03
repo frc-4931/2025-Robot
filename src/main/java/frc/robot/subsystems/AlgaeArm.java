@@ -50,4 +50,8 @@ public class AlgaeArm extends SubsystemBase {
     public void runArm(double speed){
         armMotor.set(speed);
     }
+
+    public void stopArm(){
+        armMotor.set(0);
+    }
 }
