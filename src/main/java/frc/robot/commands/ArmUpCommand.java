@@ -41,6 +41,7 @@ public class ArmUpCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_arm.runArm(ArmConstants.ARM_HOLD_UP);
+    //m_arm.stopArm();
   }
 
   // Returns true when the command should end.

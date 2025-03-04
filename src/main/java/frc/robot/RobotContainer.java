@@ -133,7 +133,7 @@ public class RobotContainer {
     {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       //driverXbox.b().onTrue(coralDrop.toggleRun());
-      //driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
+      driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
       //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       // driverXbox.b().whileTrue(
       //     drivebase.driveToPose(
@@ -154,7 +154,7 @@ public class RobotContainer {
 
       
     //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
-    //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
+    driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
     
     // Here we use a trigger as a button when it is pushed past a certain threshold
     driverXbox.rightTrigger(.2).whileTrue(new AlgieOutCommand(roller));
@@ -172,7 +172,7 @@ public class RobotContainer {
      * in L1 where you are trying to score. The numbers may need to be tuned, 
      * make sure the rollers do not wear on the plastic basket.
      */
-    driverXbox.x().whileTrue(new CoralOutCommand(roller));
+    driverXbox.start().whileTrue(new CoralOutCommand(roller));
     driverXbox.y().whileTrue(new CoralStackCommand(roller));
 
     /**

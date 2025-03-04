@@ -28,20 +28,21 @@ public final class Constants {
         public static final int ARM_MOTOR_ID = 11;
         public static final int ARM_MOTOR_CURRENT_LIMIT = 60;
         public static final double ARM_MOTOR_VOLTAGE_COMP = 10;
-        public static final double ARM_SPEED_DOWN = 0.4;
-        public static final double ARM_SPEED_UP = -0.4;
-        public static final double ARM_HOLD_DOWN = 0.1;
-        public static final double ARM_HOLD_UP = -0.15;
+        public static final double ARM_SPEED_DOWN = 0.13;
+        public static final double ARM_SPEED_UP = -0.18;
+        public static final double ARM_HOLD_DOWN = 0.01;
+        public static final double ARM_HOLD_UP = -0.04;
       }
 
       public static final class RollerConstants {
         public static final int ROLLER_MOTOR_ID = 12;
         public static final int ROLLER_MOTOR_CURRENT_LIMIT = 60;
         public static final double ROLLER_MOTOR_VOLTAGE_COMP = 10;
-        public static final double ROLLER_CORAL_OUT = -.4;
-        public static final double ROLLER_ALGAE_IN = -0.8;
+        public static final double ROLLER_CORAL_OUT = -.2;
+        public static final double ROLLER_ALGAE_IN = -0.4;
         public static final double ROLLER_ALGAE_OUT = 0.4;
-        public static final double ROLLER_CORAL_STACK = -1;
+        public static final double ROLLER_CORAL_STACK = -0.54;
+        public static final double ROLLER_CORAL_ALGAE = -0.8;
       }
 
       public static final class ClimberConstants {
