@@ -91,7 +91,7 @@ public class RobotContainer {
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    NamedCommands.registerCommand("CoralDrop", roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
+    NamedCommands.registerCommand("CoralDrop", roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -138,56 +138,79 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      //driverXbox.b().onTrue(coralDrop.toggleRun());
-      driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
-      //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      // driverXbox.b().whileTrue(
-      //     drivebase.driveToPose(
-      //         new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
-      //                         );
-      // driverXbox.start().whileTrue(Commands.runOnce(lEDs.setColor(0)));
-      driverXbox.back().whileTrue(roller.CoralStop());
-      //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      //driverXbox.rightBumper().whileTrue(autoCommands.PoseToPath("Test"));
+      driverXbox.pov(0).whileTrue(new ClimberUpCommand(climber));
+      driverXbox.pov(180).whileTrue(new ClimberDownCommand(climber));
+
+      driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.x().onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
+      //driverXbox.b().whileTrue(runOncedrivebase.setDefaultCommand(driveRobotOrientedAngularVelocity));
+      //add robot oriented button
+
+      driverXbox.leftTrigger(.2).whileTrue(new AlgieInCommand(roller));
+      driverXbox.leftBumper().whileTrue(new AlgieOutCommand(roller));
+
+      driverXbox.pov(90).whileTrue(new ArmUpCommand(algaeArm));
+      driverXbox.pov(270).whileTrue(new ArmDownCommand(algaeArm));
+
+      driverXbox.rightTrigger(.2).whileTrue(roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
+      driverXbox.rightBumper().whileTrue(new CoralStackCommand(roller));
+      driverXbox.a().whileTrue(autoCommands.FollowPath("Algae").andThen(roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop()))));
+      //add alage coral button
+      
+
+
+
+      //Old Buttons
+    //   driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+    //   //driverXbox.b().onTrue(coralDrop.toggleRun());
+    //   driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
+    //   //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+    //   // driverXbox.b().whileTrue(
+    //   //     drivebase.driveToPose(
+    //   //         new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+    //   //                         );
+    //   // driverXbox.start().whileTrue(Commands.runOnce(lEDs.setColor(0)));
+    //   driverXbox.back().whileTrue(roller.CoralStop());
+    //   //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+    //   //driverXbox.rightBumper().whileTrue(autoCommands.PoseToPath("Test"));
 
       
-      //driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
-      //driverXbox.y().onTrue(drivebase.updatePose());
-      buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
-      buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
-      buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
-      buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
+    //   //driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
+    //   //driverXbox.y().onTrue(drivebase.updatePose());
+    //   buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
+    //   buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
+    //   buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
+    //   buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
 
       
-    //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
-    driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
+    // //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
+    // driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));
     
-    // Here we use a trigger as a button when it is pushed past a certain threshold
-    driverXbox.rightTrigger(.2).whileTrue(new AlgieOutCommand(roller));
+    // // Here we use a trigger as a button when it is pushed past a certain threshold
+    // driverXbox.rightTrigger(.2).whileTrue(new AlgieOutCommand(roller));
 
-    /**
-     * The arm will be passively held up or down after this is used,
-     * make sure not to run the arm too long or it may get upset!
-     */
-    driverXbox.pov(90).whileTrue(new ArmUpCommand(algaeArm));
-    driverXbox.pov(270).whileTrue(new ArmDownCommand(algaeArm));
-    driverXbox.b().onTrue(new ArmStop(algaeArm));
+    // /**
+    //  * The arm will be passively held up or down after this is used,
+    //  * make sure not to run the arm too long or it may get upset!
+    //  */
+    // driverXbox.pov(90).whileTrue(new ArmUpCommand(algaeArm));
+    // driverXbox.pov(270).whileTrue(new ArmDownCommand(algaeArm));
+    // driverXbox.b().onTrue(new ArmStop(algaeArm));
 
-    /**
-     * Used to score coral, the stack command is for when there is already coral
-     * in L1 where you are trying to score. The numbers may need to be tuned, 
-     * make sure the rollers do not wear on the plastic basket.
-     */
-    driverXbox.start().whileTrue(new CoralOutCommand(roller));
-    driverXbox.y().whileTrue(new CoralStackCommand(roller));
+    // /**
+    //  * Used to score coral, the stack command is for when there is already coral
+    //  * in L1 where you are trying to score. The numbers may need to be tuned, 
+    //  * make sure the rollers do not wear on the plastic basket.
+    //  */
+    // driverXbox.start().whileTrue(new CoralOutCommand(roller));
+    // driverXbox.y().whileTrue(new CoralStackCommand(roller));
 
-    /**
-     * POV is a direction on the D-Pad or directional arrow pad of the controller,
-     * the direction of this will be different depending on how your winch is wound
-     */
-    driverXbox.pov(0).whileTrue(new ClimberUpCommand(climber));
-    driverXbox.pov(180).whileTrue(new ClimberDownCommand(climber));
+    // /**
+    //  * POV is a direction on the D-Pad or directional arrow pad of the controller,
+    //  * the direction of this will be different depending on how your winch is wound
+    //  */
+    // driverXbox.pov(0).whileTrue(new ClimberUpCommand(climber));
+    // driverXbox.pov(180).whileTrue(new ClimberDownCommand(climber));
     }
   }
 
