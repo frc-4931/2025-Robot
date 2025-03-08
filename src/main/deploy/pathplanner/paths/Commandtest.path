@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.4735860655737705,
-        "y": 5.355635245901639
+        "x": 2.0,
+        "y": 2.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.3485860655737705,
-        "y": 5.13912889495553
+        "x": 3.0,
+        "y": 2.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.329733606557377,
-        "y": 5.11108606557377
+        "x": 3.0,
+        "y": 2.0
       },
       "prevControl": {
-        "x": 5.454733606557377,
-        "y": 5.327592416519879
+        "x": 2.0,
+        "y": 2.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,19 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "CoralDrop",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "CoralDrop"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.999999999999996
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -29.999999999999996
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RollerConstants;
 
@@ -49,6 +50,14 @@ public class Roller extends SubsystemBase {
      */
     public void runRoller(double speed){
         rollerMotor.set(speed);
+    }
+
+    public Command CoralSpit() {
+        return this.runOnce(() -> { runRoller(-.2);});
+    }
+
+    public Command CoralStop() {
+        return this.runOnce(() -> { runRoller(0);});
     }
 
 }

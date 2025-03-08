@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "CoralDrop"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "2 Coral"
+            "pathName": "Test"
           }
         }
       ]

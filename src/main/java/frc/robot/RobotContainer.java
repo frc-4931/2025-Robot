@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -35,6 +36,7 @@ import frc.robot.commands.CoralStackCommand;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralDrop;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Roller;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
@@ -75,6 +77,7 @@ public class RobotContainer {
   private final AlgaeArm algaeArm = new AlgaeArm();
   private final Climber climber = new Climber();
   private final Roller roller = new Roller();
+  private final LEDs lEDs = new LEDs();
   private final AutoCommands autoCommands = new AutoCommands();
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(), () -> driverXbox.getLeftY() * -1, () -> driverXbox.getLeftX() * -1).withControllerRotationAxis(driverXbox::getRightX).deadband(OperatorConstants.DEADBAND).scaleTranslation(0.8).allianceRelativeControl(true);
@@ -86,12 +89,16 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
-    configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    NamedCommands.registerCommand("CoralDrop", roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    NamedCommands.registerCommand("CoralDrop", new CoralOutCommand(roller));
+
+
+    configureBindings();
   }
 
   private void configureBindings() {
@@ -139,8 +146,8 @@ public class RobotContainer {
       //     drivebase.driveToPose(
       //         new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
       //                         );
-      driverXbox.start().whileTrue(Commands.none());
-      driverXbox.back().whileTrue(Commands.none());
+      // driverXbox.start().whileTrue(Commands.runOnce(lEDs.setColor(0)));
+      driverXbox.back().whileTrue(roller.CoralStop());
       //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       //driverXbox.rightBumper().whileTrue(autoCommands.PoseToPath("Test"));
 

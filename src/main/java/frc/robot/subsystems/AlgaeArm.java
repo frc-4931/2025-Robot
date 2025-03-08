@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
@@ -53,5 +54,13 @@ public class AlgaeArm extends SubsystemBase {
 
     public void stopArm(){
         armMotor.set(0);
+    }
+
+    public Command ArmDown() {
+        return this.runOnce(() -> { runArm(.13);});
+    }
+
+    public Command ArmStop() {
+        return this.runOnce(() -> { stopArm();});
     }
 }

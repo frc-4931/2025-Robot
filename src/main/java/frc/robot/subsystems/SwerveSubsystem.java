@@ -200,8 +200,8 @@ public class SwerveSubsystem extends SubsystemBase{
     public void periodic(){
         updatePose();
         SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
-        SmartDashboard.putData("field", field);
-        field.setRobotPose(getPose());
+        SmartDashboard.putData("field2d", field);
+        field.setRobotPose(swerveDrive.getPose());
     }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier anglularRotationX){
