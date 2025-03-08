@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
@@ -50,6 +51,10 @@ public class Climber extends SubsystemBase {
      */
     public void runClimber(double speed){
         climbMotor.set(speed);
+    }
+
+    public Command ClimbStop() {
+        return this.runOnce(() -> { runClimber(0);});
     }
 
 }

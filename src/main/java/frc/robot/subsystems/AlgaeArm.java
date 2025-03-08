@@ -60,6 +60,10 @@ public class AlgaeArm extends SubsystemBase {
         return this.runOnce(() -> { runArm(.13);});
     }
 
+    public Command ArmUp() {
+        return this.runOnce(() -> { runArm(-0.18);});
+    }
+
     public Command ArmStop() {
         return this.runOnce(() -> { stopArm();});
     }
