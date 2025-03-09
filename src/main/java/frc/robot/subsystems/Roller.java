@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RollerConstants;
 
 public class Roller extends SubsystemBase {
+    // private final LEDs lEDs = new LEDs();
 
     private final SparkMax rollerMotor;
     /**
@@ -49,15 +50,20 @@ public class Roller extends SubsystemBase {
      * @param speedmotor speed from -1.0 to 1, with 0 stopping it
      */
     public void runRoller(double speed){
+        // lEDs.setColor(.77);
         rollerMotor.set(speed);
     }
 
     public Command CoralSpit() {
-        return this.runOnce(() -> { runRoller(-.2);});
+        return this.runOnce(() -> { runRoller(-.25);});
     }
 
     public Command CoralStop() {
         return this.runOnce(() -> { runRoller(0);});
+    }
+
+    public Command rollerReverse() {
+        return this.runOnce(() -> { runRoller(-.3);});
     }
 
 }

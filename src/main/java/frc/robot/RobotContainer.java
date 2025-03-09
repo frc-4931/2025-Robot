@@ -73,7 +73,7 @@ public class RobotContainer {
   final CommandJoystick buttonBox1 = new CommandJoystick(1);
   final CommandJoystick buttonBox2 = new CommandJoystick(2);
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  //private final CoralDrop coralDrop = new CoralDrop();
+  private final CoralDrop coralDrop = new CoralDrop();
   private final AlgaeArm algaeArm = new AlgaeArm();
   private final Climber climber = new Climber();
   private final Roller roller = new Roller();
@@ -91,7 +91,7 @@ public class RobotContainer {
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    NamedCommands.registerCommand("CoralDrop", roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
+    NamedCommands.registerCommand("CoralDrop", roller.CoralSpit().andThen(Commands.waitSeconds(.7)).andThen(roller.CoralStop()));//.andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -138,21 +138,23 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
-      driverXbox.pov(0).whileTrue(new ClimberUpCommand(climber));
-      driverXbox.pov(180).whileTrue(new ClimberDownCommand(climber));
+      driverXbox.pov(270).whileTrue(new ClimberUpCommand(climber));
+      driverXbox.pov(90).whileTrue(new ClimberDownCommand(climber));
 
       driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.x().onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
+      // driverXbox.b().whileTrue(driveRobotOrientedAngularVelocity);
       //driverXbox.b().whileTrue(runOncedrivebase.setDefaultCommand(driveRobotOrientedAngularVelocity));
       //add robot oriented button
 
-      driverXbox.leftTrigger(.2).whileTrue(new AlgieInCommand(roller));
+      // driverXbox.leftTrigger(.2).whileTrue(new AlgieInCommand(roller));
       driverXbox.leftBumper().whileTrue(new AlgieOutCommand(roller));
+      driverXbox.leftTrigger(.2).whileTrue(new AlgieInCommand(roller));
 
-      driverXbox.pov(90).whileTrue(new ArmUpCommand(algaeArm));
-      driverXbox.pov(270).whileTrue(new ArmDownCommand(algaeArm));
+      driverXbox.pov(0).whileTrue(new ArmUpCommand(algaeArm));
+      driverXbox.pov(180).whileTrue(new ArmDownCommand(algaeArm));
 
-      driverXbox.rightTrigger(.2).whileTrue(roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
+      driverXbox.rightTrigger(.2).whileTrue(new CoralOutCommand(roller));
       driverXbox.rightBumper().whileTrue(new CoralStackCommand(roller));
       driverXbox.a().whileTrue(autoCommands.FollowPath("Algae").andThen(roller.CoralSpit().andThen(Commands.waitSeconds(.3)).andThen(roller.CoralStop().andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop()))));
       //add alage coral button
@@ -179,7 +181,9 @@ public class RobotContainer {
     //   //driverXbox.y().onTrue(drivebase.updatePose());
     //   buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
     //   buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
-    //   buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
+      // buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
+      // buttonBox2.button(9).whileTrue(roller.rollerReverse());
+
     //   buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
 
       

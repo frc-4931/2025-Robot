@@ -10,8 +10,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.subsystems.LEDs;
 
 public class AlgaeArm extends SubsystemBase {
+    // private final LEDs lEDs = new LEDs();
 
     private final SparkMax armMotor;
     
@@ -49,6 +51,7 @@ public class AlgaeArm extends SubsystemBase {
      * @param speed motor speed from -1.0 to 1, with 0 stopping it
      */
     public void runArm(double speed){
+        // lEDs.setColor(.69);
         armMotor.set(speed);
     }
 
