@@ -2,7 +2,12 @@
   "robotWidth": 0.787,
   "robotLength": 0.787,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "Comp",
+    "Bad",
+    "Test",
+    "Button"
+  ],
   "autoFolders": [
     "Comp",
     "DontUse",
