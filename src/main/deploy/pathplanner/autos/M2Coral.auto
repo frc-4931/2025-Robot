@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "go1"
+            "pathName": "M1Coral"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "go"
+            "name": "CoralDrop"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Test",
+  "folder": null,
   "choreoAuto": false
 }

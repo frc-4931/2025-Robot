@@ -7,13 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "S2Coral"
+            "pathName": "Room1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralDrop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Room2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Room3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralDrop"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Comp",
   "choreoAuto": false
 }

@@ -55,7 +55,7 @@ public class Roller extends SubsystemBase {
     }
 
     public Command CoralSpit() {
-        return this.runOnce(() -> { runRoller(-.25);});
+        return this.runOnce(() -> { runRoller(-.15);});
     }
 
     public Command CoralStop() {

@@ -91,7 +91,8 @@ public class RobotContainer {
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    NamedCommands.registerCommand("CoralDrop", roller.CoralSpit().andThen(Commands.waitSeconds(.7)).andThen(roller.CoralStop()));//.andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
+    NamedCommands.registerCommand("CoralDrop", Commands.waitSeconds(.2).andThen(roller.CoralSpit()).andThen(Commands.waitSeconds(.7)).andThen(roller.CoralStop()));//.andThen(algaeArm.ArmDown()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmStop())));
+    NamedCommands.registerCommand("Feeder", algaeArm.ArmDown().andThen(Commands.waitSeconds(.2).andThen(algaeArm.ArmStop()).andThen(Commands.waitSeconds(.5)).andThen(algaeArm.ArmUp().andThen(Commands.waitSeconds(.2))).andThen(algaeArm.ArmStop())));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -138,8 +139,9 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
-      driverXbox.pov(270).whileTrue(new ClimberUpCommand(climber));
-      driverXbox.pov(90).whileTrue(new ClimberDownCommand(climber));
+      driverXbox.pov(270).whileTrue(climber.climbOut(-50));
+      driverXbox.pov(90).whileTrue(climber.climbOut(90));
+      driverXbox.back().whileTrue(climber.climbOut(0));
 
       driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.x().onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
@@ -165,7 +167,7 @@ public class RobotContainer {
       //Old Buttons
     //   driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
     //   //driverXbox.b().onTrue(coralDrop.toggleRun());
-    //   driverXbox.x().onTrue((Commands.runOnce(drivebase::resetToPose)));
+      driverXbox.b().onTrue((Commands.runOnce(drivebase::resetToPose)));
     //   //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
     //   // driverXbox.b().whileTrue(
     //   //     drivebase.driveToPose(
@@ -180,11 +182,11 @@ public class RobotContainer {
     //   //driverXbox.leftBumper().onTrue(autoCommands.ScoreCoral('T'));
     //   //driverXbox.y().onTrue(drivebase.updatePose());
     //   buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
-    //   buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
+      buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
       // buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
       // buttonBox2.button(9).whileTrue(roller.rollerReverse());
 
-    //   buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
+      buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
 
       
     // //driverXbox.rightBumper().whileTrue(new AlgieInCommand(roller));

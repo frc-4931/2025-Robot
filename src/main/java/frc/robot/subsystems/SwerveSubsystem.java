@@ -72,13 +72,13 @@ public class SwerveSubsystem extends SubsystemBase{
         } catch (Exception e){
             throw new RuntimeException(e);
         }
+        swerveDrive.setAutoCenteringModules(false);
         swerveDrive.setHeadingCorrection(true);
         swerveDrive.setCosineCompensator(true);
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
 
-        
-
+    
         setupPathPlanner();
 
     }
@@ -110,8 +110,8 @@ public class SwerveSubsystem extends SubsystemBase{
                 }, 
                 //this::driveRobotRelative,
                 new PPHolonomicDriveController(
-                    new PIDConstants(1.5, 0, 0),
-                    new PIDConstants(0, 0, 0)),
+                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(5, 0, 0)),
                 config,
                 () -> {
                         var alliance = DriverStation.getAlliance();
@@ -198,10 +198,11 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
-        updatePose();
+        // updatePose();
         SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
         SmartDashboard.putData("field2d", field);
         field.setRobotPose(swerveDrive.getPose());
+        // SmartDashboard.putNumber("P", p);
     }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier anglularRotationX){
@@ -256,7 +257,9 @@ public class SwerveSubsystem extends SubsystemBase{
         boolean doRejectUpdate = false;
 
         LimelightHelpers.SetRobotOrientation("", swerveDrive.swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        try {
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+        
         if(mt2.tagCount == 0)
       {
         doRejectUpdate = true;
@@ -266,6 +269,12 @@ public class SwerveSubsystem extends SubsystemBase{
         //swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(pose.pose, Timer.getFPGATimestamp());
         swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(mt2.pose, Timer.getFPGATimestamp());
       }
+    }
+
+    catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return;
+    }
         //double[] pose = new Pose2d(pose[1], pose[0], Rotation2d.fromDegrees(pose[7]));
         
     }
