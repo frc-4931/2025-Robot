@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "FeederStart"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "M1Coral"

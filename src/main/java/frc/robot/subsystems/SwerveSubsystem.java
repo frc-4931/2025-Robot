@@ -198,7 +198,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
-        // updatePose();
+        updatePose();
         SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
         SmartDashboard.putData("field2d", field);
         field.setRobotPose(swerveDrive.getPose());
