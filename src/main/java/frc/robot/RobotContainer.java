@@ -173,7 +173,7 @@ public class RobotContainer {
     //   //     drivebase.driveToPose(
     //   //         new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
     //   //                         );
-    //   // driverXbox.start().whileTrue(Commands.runOnce(lEDs.setColor(0)));
+      driverXbox.start().whileTrue(lEDs.setColor(0));
     //   driverXbox.back().whileTrue(roller.CoralStop());
     //   //driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     //   //driverXbox.rightBumper().whileTrue(autoCommands.PoseToPath("Test"));

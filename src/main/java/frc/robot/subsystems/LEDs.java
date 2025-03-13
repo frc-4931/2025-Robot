@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
@@ -13,8 +14,8 @@ public class LEDs extends SubsystemBase {
         LEDController.set(color);
     }
 
-    public void setColor(double newcolor) {
-        LEDController.set(newcolor);
+    public Command setColor(double newcolor) {
+        return this.runOnce(() -> {LEDController.set(newcolor);});
 
     }
 
