@@ -107,6 +107,14 @@ public class AutoCommands {
     return PoseToPath("Right");
   }
 
+  public Command Process(){
+    return PoseToPath("Process");
+  }
+
+  public Command Climb(){
+    return PoseToPath("Climb");
+  }
+
   public Command AimAtFeeder(){
     Command pathfindingCommand = AutoBuilder.pathfindToPose(new Pose2d(2, 2, Rotation2d.fromDegrees(0)), Pathconstraint);
     return pathfindingCommand;

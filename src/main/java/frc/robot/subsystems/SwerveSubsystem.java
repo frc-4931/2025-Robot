@@ -198,7 +198,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
-        updatePose();
+        // updatePose();
         SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
         SmartDashboard.putData("field2d", field);
         field.setRobotPose(swerveDrive.getPose());
@@ -255,20 +255,18 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public void updatePose(){
         boolean doRejectUpdate = false;
-
         LimelightHelpers.SetRobotOrientation("", swerveDrive.swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         try {
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
-        
+
         if(mt2.tagCount == 0)
       {
         doRejectUpdate = true;
       }
       if(!doRejectUpdate)
       {
-        //swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(pose.pose, Timer.getFPGATimestamp());
-        swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(mt2.pose, Timer.getFPGATimestamp());
-      }
+            swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(mt2.pose, Timer.getFPGATimestamp());
+        }
     }
 
     catch (Exception e) {

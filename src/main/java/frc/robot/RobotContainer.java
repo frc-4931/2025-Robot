@@ -141,12 +141,12 @@ public class RobotContainer {
     } else
     {
       driverXbox.pov(270).whileTrue(climber.climbOut(-50));
-      driverXbox.pov(90).whileTrue(climber.climbOut(120));
+      driverXbox.pov(90).whileTrue(climber.climbOut(150));
       driverXbox.back().whileTrue(climber.climbOut(0));
 
       driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.x().onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
-      buttonBox2.button(5).onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
+      buttonBox2.button(5 ).onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
 
       // driverXbox.b().whileTrue(driveRobotOrientedAngularVelocity);
       //driverXbox.b().whileTrue(runOncedrivebase.setDefaultCommand(driveRobotOrientedAngularVelocity));
@@ -201,6 +201,8 @@ public class RobotContainer {
       buttonBox1.button(10).whileTrue(autoCommands.ScoreCoral('L'));
       buttonBox2.button(1).whileTrue(autoCommands.LFeeder());
       buttonBox2.button(12).whileTrue(autoCommands.RFeeder());
+      buttonBox2.button(9).whileTrue(autoCommands.Process());
+      buttonBox2.button(2).whileTrue(autoCommands.Climb());
       // buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
       // buttonBox2.button(9).whileTrue(roller.rollerReverse());
 
