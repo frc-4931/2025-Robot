@@ -2,30 +2,38 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meter;
 
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.commands.PathPlannerAuto;
-// import com.pathplanner.lib.commands.PathfindingCommand;
-// import com.pathplanner.lib.config.PIDConstants;
-// import com.pathplanner.lib.config.RobotConfig;
-// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-// import com.pathplanner.lib.path.PathConstraints;
-// import com.pathplanner.lib.path.PathPlannerPath;
-// import com.pathplanner.lib.util.DriveFeedforwards;
-// import com.pathplanner.lib.util.swerve.SwerveSetpoint;
-// import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.Publisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,7 +41,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-//import frc.robot.subsystems.swervedrive.Vision.Cameras;
+import frc.robot.LimelightHelpers;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -41,8 +50,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-// import org.json.simple.parser.ParseException;
-// import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -56,6 +63,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveSubsystem extends SubsystemBase{
 
     private final SwerveDrive swerveDrive;
+    private final Field2d field = new Field2d();
 
     public SwerveSubsystem(File directory){
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -64,18 +72,65 @@ public class SwerveSubsystem extends SubsystemBase{
         } catch (Exception e){
             throw new RuntimeException(e);
         }
-        swerveDrive.setHeadingCorrection(false);
-        swerveDrive.setCosineCompensator(false);
+        swerveDrive.setAutoCenteringModules(false);
+        swerveDrive.setHeadingCorrection(true);
+        swerveDrive.setCosineCompensator(true);
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
 
-        // setupPathPlanner();
+    
+        setupPathPlanner();
 
     }
 
     public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg){
         swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED, new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
     }
+
+    public void setupPathPlanner(){
+        try{
+            RobotConfig config = RobotConfig.fromGUISettings();
+
+            final boolean enableFeedForward = true;
+
+            AutoBuilder.configure(
+                this::getPose, 
+                this::resetOdometry, 
+                this::getRobotVelocity, 
+                (speedsRobotRelative, moduleFeedForwards) -> {
+                    if(enableFeedForward){
+                        swerveDrive.drive(
+                            speedsRobotRelative,
+                            swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                            moduleFeedForwards.linearForces()
+                        );
+                    } else{
+                        swerveDrive.setChassisSpeeds(speedsRobotRelative);
+                    }
+                }, 
+                //this::driveRobotRelative,
+                new PPHolonomicDriveController(
+                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(5, 0, 0)),
+                config,
+                () -> {
+                        var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+        },
+        this
+      );
+    }catch(Exception e){
+      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+    }
+    }
+
+    // Set up custom logging to add the current path to a field 2d widget
+    // PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+
+    
 
     // public void setupPathPlanner(){
     // // Load the RobotConfig from the GUI settings. You should probably
@@ -143,6 +198,11 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public void periodic(){
+        // updatePose();
+        SmartDashboard.putNumber("TX", LimelightHelpers.getTX(""));
+        SmartDashboard.putData("field2d", field);
+        field.setRobotPose(swerveDrive.getPose());
+        // SmartDashboard.putNumber("P", p);
     }
 
     public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier anglularRotationX){
@@ -185,8 +245,36 @@ public class SwerveSubsystem extends SubsystemBase{
         swerveDrive.resetOdometry(initialHolonomicPose);
     }
 
+    public void resetToPose(){
+        swerveDrive.resetOdometry(new Pose2d(2, 2, new Rotation2d(0)));
+    }
+
     public Pose2d getPose(){
         return swerveDrive.getPose();
+    }
+
+    public void updatePose(){
+        boolean doRejectUpdate = false;
+        LimelightHelpers.SetRobotOrientation("", swerveDrive.swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        try {
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+
+        if(mt2.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+      if(!doRejectUpdate)
+      {
+            swerveDrive.swerveDrivePoseEstimator.addVisionMeasurement(mt2.pose, Timer.getFPGATimestamp());
+        }
+    }
+
+    catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return;
+    }
+        //double[] pose = new Pose2d(pose[1], pose[0], Rotation2d.fromDegrees(pose[7]));
+        
     }
 
     public void setChassisSpeeds(ChassisSpeeds chassisSpeeds){

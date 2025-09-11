@@ -1,0 +1,152 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.959836065573771,
+        "y": 4.030993852459016
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.048770491803278,
+        "y": 4.2347848360655735
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.754098360655737,
+        "y": 3.87515368852459
+      },
+      "prevControl": {
+        "x": 5.68217213114754,
+        "y": 4.510502049180328
+      },
+      "nextControl": {
+        "x": 5.866587375936675,
+        "y": 2.8815007202096425
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.81905737704918,
+        "y": 1.9451331967213106
+      },
+      "prevControl": {
+        "x": 5.945901639344262,
+        "y": 2.4606045081967203
+      },
+      "nextControl": {
+        "x": 3.760223659639828,
+        "y": 1.4607730919489472
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.4984631147540983,
+        "y": 0.746362704918032
+      },
+      "prevControl": {
+        "x": 1.7434472666059977,
+        "y": 0.6132191441289561
+      },
+      "nextControl": {
+        "x": 0.9470286885245903,
+        "y": 1.046055327868852
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.943954918032787,
+        "y": 2.8801741803278684
+      },
+      "prevControl": {
+        "x": 2.7571721311475414,
+        "y": 1.6094774590163936
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": -35.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "CoralDrop",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "CoralDrop"
+        }
+      }
+    },
+    {
+      "name": "Wait",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 1.0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "CoralDrop",
+      "waypointRelativePos": 4.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "CoralDrop"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 150.0
+  },
+  "reversed": false,
+  "folder": "Bad",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}
