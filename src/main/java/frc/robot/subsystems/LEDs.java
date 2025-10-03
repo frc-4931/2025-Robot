@@ -15,6 +15,5 @@ public class LEDs extends SubsystemBase {
 
     public void setColor(double newcolor) {
         LEDController.set(newcolor);
-
     }
 }
