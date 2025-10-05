@@ -67,10 +67,6 @@ public class SwerveSubsystem extends SubsystemBase
    * Enable vision odometry updates while driving.
    */
   private final boolean     visionDriveTest = false;
-  /**
-   * PhotonVision class to keep an accurate odometry.
-   */
-  //private       LimelightHelpers      vision;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -130,13 +126,7 @@ public class SwerveSubsystem extends SubsystemBase
                                              Rotation2d.fromDegrees(0)));
   }
 
-  /**
-   * Setup the photon vision class.
-   */
-  public void setupPhotonVision()
-  {
-    //vision = new Vision(swerveDrive::getPose, swerveDrive.field);
-  }
+
 
   @Override
   public void periodic()
@@ -145,11 +135,13 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
-      //vision.updatePoseEstimation(swerveDrive);
       updateVisionOdometry();
     }
   }
 
+  /**
+   * Limelight MegaTag Pose Estimation
+   */
   public void updateVisionOdometry(){
     LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
     if(limelightMeasurement.tagCount >= 2)
