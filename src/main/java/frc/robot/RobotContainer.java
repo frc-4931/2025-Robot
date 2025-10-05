@@ -106,7 +106,7 @@ public class RobotContainer {
       driverXbox.rightBumper().whileTrue(new ArmUpCommand(algaeArm));
       driverXbox.a().whileTrue(new CoralOutCommand(roller));
       driverXbox.b().whileTrue(new CoralStackCommand(roller));
-      driverXbox.b().onTrue((Commands.runOnce(drivebase::resetToPose)));
+      //driverXbox.b().onTrue((Commands.runOnce(drivebase::resetToPose)));
 
       buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
       buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
