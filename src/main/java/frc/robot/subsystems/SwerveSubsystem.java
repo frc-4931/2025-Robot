@@ -149,9 +149,10 @@ public class SwerveSubsystem extends SubsystemBase
    * Limelight MegaTag Pose Estimation
    */
   public void updateVisionOdometry(){
-    if (MegaTag2){ //Limelight MegaTag2 Pose Estimation
+    if (MegaTag2){ // Limelight MegaTag2 Pose Estimation
+
         // First, tell Limelight your robot's current orientation
-        double robotYaw = pigeon.getYaw();
+        double robotYaw = pigeon.getYaw(); // Needs to be robot yaw in degrees. 0 = robot facing red alliance wall in FRC
         LimelightHelpers.SetRobotOrientation("limelight", robotYaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
         // Get the pose estimate
@@ -164,8 +165,12 @@ public class SwerveSubsystem extends SubsystemBase
             limelightMeasurement.timestampSeconds
         );
     }
-    else{ //Limelight MegaTag Pose Estimation
+    else { // Limelight MegaTag Pose Estimation
+
+        // Get the pose estimate
         LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+
+        // Add it to your pose estimator
         if(limelightMeasurement.tagCount >= 2){  // Only trust measurement if we see multiple tags
         swerveDrive.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds, VecBuilder.fill(.7,.7,9999999));
         }
