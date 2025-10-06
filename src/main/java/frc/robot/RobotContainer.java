@@ -93,19 +93,32 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
-      driverXbox.pov(270).whileTrue(climber.climbOut(-50));
-      driverXbox.pov(90).whileTrue(climber.climbOut(150));
-      driverXbox.back().whileTrue(climber.climbOut(0));
-      driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      // Reset Gyro Button
+      //driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+
+      // X Button
       driverXbox.x().onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
-      driverXbox.leftBumper().whileTrue(new AlgieOutCommand(roller));
-      driverXbox.leftTrigger(.2).onTrue(new AlgieInCommand(roller));
+
+      // Arm Controls 
       driverXbox.pov(0).whileTrue(new ArmUpCommand(algaeArm));
       driverXbox.pov(180).whileTrue(new ArmDownCommand(algaeArm));
       driverXbox.rightTrigger(.2).whileTrue(new ArmDownCommand(algaeArm));
       driverXbox.rightBumper().whileTrue(new ArmUpCommand(algaeArm));
+
+      // Climber Controls
+      driverXbox.pov(90).whileTrue(climber.climbOut(150));
+      driverXbox.pov(270).whileTrue(climber.climbOut(-50));
+      driverXbox.back().whileTrue(climber.climbOut(0));
+
+      // Coral Controls
       driverXbox.a().whileTrue(new CoralOutCommand(roller));
       driverXbox.b().whileTrue(new CoralStackCommand(roller));
+
+      // Algie Controls
+      driverXbox.leftBumper().whileTrue(new AlgieOutCommand(roller));
+      driverXbox.leftTrigger(.2).onTrue(new AlgieInCommand(roller));
+
+      
       //driverXbox.b().onTrue((Commands.runOnce(drivebase::resetToPose)));
 
       buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
