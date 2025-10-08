@@ -103,7 +103,7 @@ public class RobotContainer {
       driverXbox.pov(0).whileTrue(new ArmUpCommand(algaeArm));
       driverXbox.pov(180).whileTrue(new ArmDownCommand(algaeArm));
       driverXbox.rightTrigger(.2).whileTrue(new ArmDownCommand(algaeArm));
-      driverXbox.rightBumper().whileTrue(new ArmUpCommand(algaeArm));
+      driverXbox.leftTrigger(0.2).whileTrue(new ArmUpCommand(algaeArm));
 
       // Climber Controls
       driverXbox.pov(90).whileTrue(climber.climbOut(150));
@@ -116,7 +116,7 @@ public class RobotContainer {
 
       // Algie Controls
       driverXbox.leftBumper().whileTrue(new AlgieOutCommand(roller));
-      driverXbox.leftTrigger(.2).onTrue(new AlgieInCommand(roller));
+      driverXbox.rightBumper().onTrue(new AlgieInCommand(roller));
 
       
       //driverXbox.b().onTrue((Commands.runOnce(drivebase::resetToPose)));
