@@ -94,7 +94,7 @@ public class RobotContainer {
     } else
     {
       // Reset Gyro Button
-      //driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
       // X Button
       driverXbox.x().onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
