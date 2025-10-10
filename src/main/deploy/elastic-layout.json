@@ -1,6 +1,6 @@
 {
   "version": 1.0,
-  "grid_size": 128,
+  "grid_size": 64,
   "tabs": [
     {
       "name": "Teleoperated",
@@ -9,8 +9,8 @@
         "containers": [
           {
             "title": "swerve",
-            "x": 256.0,
-            "y": 640.0,
+            "x": 1088.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 256.0,
             "type": "YAGSL Swerve Drive",
@@ -23,22 +23,9 @@
             }
           },
           {
-            "title": "Auto Chooser",
-            "x": 0.0,
-            "y": 640.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "ComboBox Chooser",
-            "properties": {
-              "topic": "/SmartDashboard/Auto Chooser",
-              "period": 0.06,
-              "sort_options": false
-            }
-          },
-          {
             "title": "Pigeon IMU [13]",
-            "x": 512.0,
-            "y": 640.0,
+            "x": 1088.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Gyro",
@@ -52,8 +39,8 @@
             "title": "Field",
             "x": 0.0,
             "y": 0.0,
-            "width": 1024.0,
-            "height": 640.0,
+            "width": 832.0,
+            "height": 384.0,
             "type": "Field",
             "properties": {
               "topic": "/SmartDashboard/Field",
@@ -69,11 +56,24 @@
             }
           },
           {
-            "title": "limelight",
-            "x": 1024.0,
+            "title": "Auto Chooser",
+            "x": 832.0,
             "y": 0.0,
-            "width": 896.0,
-            "height": 640.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "limelight",
+            "x": 832.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight",
