@@ -143,16 +143,9 @@ public class RobotContainer {
                                  Rotation2d.fromDegrees(90));
       //drivebase.getSwerveDrive().field.getObject("targetPose").setPose(target);
       driveDirectAngleKeyboard.driveToPose(() -> target,
-                                           new ProfiledPIDController(5,
-                                                                     0,
-                                                                     0,
-                                                                     new Constraints(5, 2)),
-                                           new ProfiledPIDController(5,
-                                                                     0,
-                                                                     0,
-                                                                     new Constraints(Units.degreesToRadians(360),
-                                                                                     Units.degreesToRadians(180))
-                                           ));
+                                           new ProfiledPIDController(5,0,0,new Constraints(5, 2)),
+                                           new ProfiledPIDController(5,0,0,
+                                           new Constraints(Units.degreesToRadians(360), Units.degreesToRadians(180))));
       driverXbox.start().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
       driverXbox.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
       driverXbox.button(2).whileTrue(Commands.runEnd(() -> driveDirectAngleKeyboard.driveToPoseEnabled(true),
@@ -171,7 +164,7 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     } 
     else {
-      // Reset Gyro Button
+      // Reset Gyro
       driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
       // X Button
@@ -196,9 +189,7 @@ public class RobotContainer {
       driverXbox.leftBumper().whileTrue(new AlgieOutCommand(roller));
       driverXbox.rightBumper().onTrue(new AlgieInCommand(roller));
 
-      
-      //driverXbox.b().onTrue((Commands.runOnce(drivebase::resetToPose)));
-
+      // Button Box
       buttonBox1.button(9).whileTrue(autoCommands.ScoreCoral('A'));
       buttonBox1.button(8).whileTrue(autoCommands.ScoreCoral('B'));
       buttonBox1.button(7).whileTrue(autoCommands.ScoreCoral('C'));
