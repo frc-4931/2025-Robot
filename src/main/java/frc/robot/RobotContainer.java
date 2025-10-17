@@ -167,6 +167,9 @@ public class RobotContainer {
       // Reset Gyro
       driverXbox.y().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
+      // Drive Robot Oriented?
+      driverXbox.start().whileTrue(driveRobotOrientedAngularVelocity);
+
       // X Button
       driverXbox.x().onTrue(algaeArm.ArmStop().andThen(roller.CoralStop()).andThen(climber.ClimbStop()));
 
